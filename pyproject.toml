@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ds2api"
+version = "0.1.0"
+description = "Unofficial Python client for DeepSeek web chat flows."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "requests>=2.31,<3",
+    "wasmtime>=25",
+]
+authors = [
+    { name = "DS2API maintainers" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Typing :: Typed",
+]
+
+[tool.setuptools]
+packages = ["DS2API", "DS2API.src"]
+
+[tool.setuptools.package-dir]
+"DS2API" = "."
+"DS2API.src" = "src"
+
+[tool.setuptools.package-data]
+"DS2API" = ["py.typed"]
+"DS2API.src" = ["sha3_wasm_bg.wasm"]
