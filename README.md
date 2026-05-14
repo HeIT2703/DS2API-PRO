@@ -19,6 +19,7 @@ attachment prompts, and Proof-of-Work solving.
 - [Installation](#installation)
 - [Authentication](#authentication)
 - [Quick Start](#quick-start)
+- [Examples](#examples)
 - [One-Shot Chat](#one-shot-chat)
 - [Session Chat](#session-chat)
 - [DeepThink And Web Search](#deepthink-and-web-search)
@@ -26,6 +27,7 @@ attachment prompts, and Proof-of-Work solving.
 - [Async Client](#async-client)
 - [Error Handling](#error-handling)
 - [Client Options](#client-options)
+- [Testing](#testing)
 - [Troubleshooting](#troubleshooting)
 - [Security Notes](#security-notes)
 - [License](#license)
@@ -149,6 +151,21 @@ with DeepSeekClient(token=token) as client:
     response = client.ask("Reply with one short sentence.", model="instant")
     print(response.text)
 ```
+
+## Examples
+
+Run the included demo after setting `DEEPSEEK_USER_TOKEN`:
+
+```bash
+python examples/demo.py "Reply with one short sentence."
+```
+
+Useful flags:
+
+- `--stream`: print response text as it arrives.
+- `--expert --thinking`: use expert mode with DeepThink.
+- `--search`: enable web search.
+- `--file path/to/file.txt`: upload and attach a local file.
 
 ## One-Shot Chat
 
@@ -328,6 +345,24 @@ Useful options:
   `requests`.
 - `max_upload_size_bytes`: block oversized file uploads before sending them.
 - `pow_max_difficulty`: refuse unexpectedly expensive Proof-of-Work challenges.
+
+## Testing
+
+Run the offline test suite with:
+
+```bash
+python -m unittest discover -s tests -p "test*.py" -v
+```
+
+Live smoke checks are opt-in because they call `chat.deepseek.com`:
+
+```bash
+$env:DS2API_LIVE_TOKEN = "your-userToken-here"
+python tests/live_smoke.py
+```
+
+If `DS2API_LIVE_TOKEN` is not set, the live smoke script prints `SKIP` and
+exits successfully.
 
 ## Troubleshooting
 
