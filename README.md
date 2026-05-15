@@ -20,6 +20,7 @@ attachment prompts, and Proof-of-Work solving.
 - [Authentication](#authentication)
 - [Quick Start](#quick-start)
 - [Examples](#examples)
+- [Localhost Server](#localhost-server)
 - [One-Shot Chat](#one-shot-chat)
 - [Session Chat](#session-chat)
 - [DeepThink And Web Search](#deepthink-and-web-search)
@@ -166,6 +167,96 @@ Useful flags:
 - `--expert --thinking`: use expert mode with DeepThink.
 - `--search`: enable web search.
 - `--file path/to/file.txt`: upload and attach a local file.
+
+## Localhost Server
+
+Run a local HTTP server after setting `DEEPSEEK_USER_TOKEN`:
+
+```powershell
+$env:DEEPSEEK_USER_TOKEN = "your-userToken-here"
+python server.py --host 127.0.0.1 --port 8000
+```
+
+If DS2API is installed with `python -m pip install -e .`, the console command
+is also available:
+
+```powershell
+ds2api-server --host 127.0.0.1 --port 8000
+```
+
+Health check:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8000/health
+```
+
+One-shot request:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8000/ask `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body '{"prompt":"Reply with one short sentence.","model":"instant"}'
+```
+
+You can also pass the DeepSeek web token per request instead of setting
+`DEEPSEEK_USER_TOKEN`:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8000/ask `
+  -Method Post `
+  -Headers @{ Authentication = "Bearer your-userToken-here" } `
+  -ContentType "application/json" `
+  -Body '{"prompt":"Reply with one short sentence.","model":"instant"}'
+```
+
+OpenAI-style chat completions are available at `/v1/chat/completions` for
+non-streaming requests. Supported local model names are `instant`, `expert`,
+`deepseek-chat`, and `deepseek-reasoner`.
+
+Postman test:
+
+Start the local server, then in Postman choose **Import** -> **Raw text** and
+paste this command:
+
+```bash
+curl --location "http://127.0.0.1:8000/ask" \
+  --header "Authentication: Bearer your-userToken-here" \
+  --header "Content-Type: application/json" \
+  --data "{\"prompt\":\"Reply with exactly: OK\",\"model\":\"instant\"}"
+```
+
+Expected response:
+
+```json
+{
+  "text": "OK"
+}
+```
+
+Postman test for the OpenAI-style endpoint:
+
+```bash
+curl --location "http://127.0.0.1:8000/v1/chat/completions" \
+  --header "Authentication: Bearer your-userToken-here" \
+  --header "Content-Type: application/json" \
+  --data "{\"model\":\"deepseek-chat\",\"messages\":[{\"role\":\"user\",\"content\":\"Reply with exactly: OK\"}]}"
+```
+
+Expected response shape:
+
+```json
+{
+  "object": "chat.completion",
+  "choices": [
+    {
+      "message": {
+        "content": "OK"
+      }
+    }
+  ]
+}
+```
 
 ## One-Shot Chat
 

@@ -23,6 +23,9 @@ classifiers = [
     "Typing :: Typed",
 ]
 
+[project.scripts]
+ds2api-server = "DS2API.server:main"
+
 [tool.setuptools]
 packages = ["DS2API", "DS2API.src"]
 
